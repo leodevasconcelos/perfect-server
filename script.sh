@@ -13,7 +13,7 @@
 
 # Desenvolvimento de Teste
 
-echo "\e[1;31m Instalação do Web Service"
+echo "\033[31;40;1m Instalação do Web Service"
 echo "1) apache2"
 echo "2) nginx"
 read SERVER
