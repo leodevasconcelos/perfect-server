@@ -33,6 +33,7 @@ then
   then
     # PHP PHP 7.1
 	  echo "Instalação do PHP PHP 7.1"
+  fi
 elif [ "$SERVER" == "2" ];
 then
   # Apache
@@ -49,4 +50,5 @@ then
   then
     # PHP PHP 7.1
 	  echo "Instalação do PHP PHP 7.1 + PHP-FPM"
+  fi
 fi
