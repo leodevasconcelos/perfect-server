@@ -16,12 +16,12 @@
 echo "\e[1;31m Instalação do Web Service"
 echo "1) apache2"
 echo "2) nginx"
-read ANS
-if [ "$ANS" == "1" ];
+read SERVER
+if [ "$SERVER" == "1" ];
 then
 	# Apache
 	echo "Instalação do Apache2"
-elif [ "$ANS" == "2" ];
+elif [ "$SERVER" == "2" ];
 then
   # Apache
 	echo "Instalação do nginx"
