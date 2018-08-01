@@ -26,7 +26,7 @@
 # Cyan         0;36     Light Cyan    1;36
 # Light Gray   0;37     White         1;37
 GREEN="\033[0;32m" # Verde
-ORANGE"\033[0;33m" # Laranja
+ORANGE="\033[0;33m" # Laranja
 RED="\033[0;31m"   # Vermelho
 NORMAL="\033[0m"   # Sem cor (Cor normal)
 
@@ -42,27 +42,48 @@ echo -e "${ORANGE}Instalando pacotes essenciais${NORMAL}"
 sudo apt-get install software-properties-common python-software-properties curl
 
 # Escolha o Web Server
-echo -e "${GREEN}Escolha o Web Server${NORMAL}"
 echo -e "${RED}1${NORMAL}) apache2"
 echo -e "${RED}2${NORMAL}) nginx"
+echo -ne "${GREEN}Escolha o Web Server: ${NORMAL}"
 read SERVER
 if [ "$SERVER" == "1" ]; then
 	# Apache
 	echo -e "${ORANGE}Instalando Apache2${NORMAL}"
   sudo apt-get install apache2
-  
+  # Configurações do Firewall
+  sudo ufw enable
+  sudo ufw allow "Apache Full"
+  sudo ufw allow "OpenSSH"
   # Versão do PHP
-  echo -e "${GREEN}Escolha a versão do PHP${NORMAL}"
   echo -e "${RED}1${NORMAL}) PHP 5.6"
   echo -e "${RED}2${NORMAL}) PHP 7.2"
+  echo -ne "${GREEN}Escolha a versão do PHP: ${NORMAL}"
   read PHPV1
   if [ "$PHPV1" == "1" ]; then
     # Instalando PHP 5.6
     echo -e "${ORANGE}Adiconando repositório do PHP 5.6${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
 	  echo -e "${ORANGE}Instalando PHP 5.6${NORMAL}"
-    sudo apt install -y php5.6 libapache2-mod-php5.6 php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-mysql php5.6-xml php5.6-xmlrpc
-    # apt-get install -y php5.6 php5.6-mcrypt php5.6-mbstring php5.6-curl php5.6-cli php5.6-mysql php5.6-gd php5.6-intl php5.6-xsl php5.6-zip libapache2-mod-php5.6
+    sudo apt install -y php5.6 libapache2-mod-php5.6 php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-cli php5.6-memcached php5.6-mysql php5.6-xml php5.6-xmlrpc php5.6-intl php5.6-xsl php5.6-zip
+    # sudo apt-get install memcached
+    # Configurações do PHP
+    # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^expose_php = On@expose_php = Off@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php/5.6/apache2/php.ini
+    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php/5.6/apache2/php.ini
+    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/apache2/php.ini
+    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/apache2/php.ini
+    # Restart Apache2
+    sudo /etc/init.d/apache2 restart
   elif [ "$PHPV1" == "2" ]; then
     # Instalando PHP 7.2
     echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
@@ -70,21 +91,21 @@ if [ "$SERVER" == "1" ]; then
     echo -e "${ORANGE}Instalando PHP 7.2 e alguns pacotes${NORMAL}"
     sudo apt-get install php7.2-cli libapache2-mod-php7.2 php7.2-mysql php7.2-curl php-memcached php7.2-dev php7.2-sqlite3 php7.2-mbstring php7.2-gd php7.2-json
     # Configurações do PHP
-    # sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" ${php_install_dir}/etc/php.ini
-    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' ${php_install_dir}/etc/php.ini
+    # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php/7.2/apache2/php.ini
+    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php/7.2/apache2/php.ini
     sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php/7.2/apache2/php.ini
-    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' ${php_install_dir}/etc/php.ini
-    # sed -i 's@^expose_php = On@expose_php = Off@' ${php_install_dir}/etc/php.ini
-    # sed -i 's@^request_order.*@request_order = "CGP"@' ${php_install_dir}/etc/php.ini
+    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php/7.2/apache2/php.ini
+    # sed -i 's@^expose_php = On@expose_php = Off@' /etc/php/7.2/apache2/php.ini
+    # sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php/7.2/apache2/php.ini
     sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php/7.2/apache2/php.ini
     sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php/7.2/apache2/php.ini
     sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php/7.2/apache2/php.ini
     sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/7.2/apache2/php.ini
-    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' ${php_install_dir}/etc/php.ini
-    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' ${php_install_dir}/etc/php.ini
-    # [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' ${php_install_dir}/etc/php.ini
-    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" ${php_install_dir}/etc/php.ini
-    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" ${php_install_dir}/etc/php.ini
+    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' /etc/php/7.2/apache2/php.ini
+    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php/7.2/apache2/php.ini
+    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php/7.2/apache2/php.ini
+    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" /etc/php/7.2/apache2/php.ini
+    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/7.2/apache2/php.ini
     # Restart Apache2
     sudo /etc/init.d/apache2 restart
   fi
@@ -92,15 +113,45 @@ elif [ "$SERVER" == "2" ]; then
   # nginx
 	echo -e "${ORANGE}Instalando nginx${NORMAL}"
   sudo apt-get install nginx
+  # Configurações do Firewall
+  sudo ufw enable
+  sudo ufw allow 'Nginx Full'
+  sudo ufw allow "OpenSSH"
+  sudo ufw delete allow 'Nginx HTTP'
 
   # Versão do PHP para nginx
-  echo -e "${GREEN}Escolha a versão do PHP${NORMAL}"
   echo -e "${RED}1${NORMAL}) PHP 5.6 + PHP-FPM"
   echo -e "${RED}2${NORMAL}) PHP 7.2 + PHP-FPM"
+  echo -ne "${GREEN}Escolha a versão do PHP: ${NORMAL}"
   read PHPV2
   if [ "$PHPV2" == "1" ]; then
     # Instalando PHP 5.6
+    echo -e "${ORANGE}Adiconando repositório do PHP 5.6${NORMAL}"
+    sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
 	  echo -e "${ORANGE}Instalando 5.6 + PHP-FPM${NORMAL}"
+    sudo apt install -y php5.6 php5.6-fpm php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-cli php5.6-memcached php5.6-mysql php5.6-xml php5.6-xmlrpc php5.6-intl php5.6-xsl php5.6-zip
+    # sudo apt-get install memcached
+    # Configurações do PHP
+    
+    # /etc/php5/fpm/php.ini
+
+    # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^expose_php = On@expose_php = Off@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php/5.6/apache2/php.ini
+    sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' /etc/php/5.6/apache2/php.ini
+    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php/5.6/apache2/php.ini
+    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php/5.6/apache2/php.ini
+    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/apache2/php.ini
+    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/apache2/php.ini
+    # Restart Nginx
+    sudo service nginx reload
   elif [ "$PHPV2" == "2" ]; then
     # Instalando PHP 7.2
     echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
@@ -120,16 +171,18 @@ elif [ "$SERVER" == "2" ]; then
     sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/7.2/apache2/php.ini
     # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' ${php_install_dir}/etc/php.ini
     # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' ${php_install_dir}/etc/php.ini
-    # [ -e /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' ${php_install_dir}/etc/php.ini
+    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' ${php_install_dir}/etc/php.ini
     # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" ${php_install_dir}/etc/php.ini
     # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" ${php_install_dir}/etc/php.ini
+    # Restart Nginx
+    sudo service nginx reload
   fi
 fi
 
 # Instalação do SGBD
-echo -e "${GREEN}Escolha o SGBD${NORMAL}"
 echo -e "${RED}1${NORMAL}) MySQL"
 echo -e "${RED}2${NORMAL}) MariaDB"
+echo -ne "${GREEN}Escolha o SGBD: ${NORMAL}"
 read SQLSERVER
 if [ "$SQLSERVER" == "1" ]; then
   # MySQL
@@ -142,7 +195,7 @@ elif [ "$SQLSERVER" == "2" ]; then
 fi
 
 # Instalação segura do MySQL/MariaDB
-echo -e "${GREEN}Realizar instalação segura do MySQL/MariaDB${NORMAL} [Y/n]?"
+echo -ne "${GREEN}Realizar instalação segura do MySQL/MariaDB${NORMAL} [Y/n]: ?"
 read SGBDSECURE
 if [ "$SGBDSECURE" == "y" ] || [ "$SGBDSECURE" == "Y" ]; then
   # Instalação segura
@@ -151,7 +204,7 @@ if [ "$SGBDSECURE" == "y" ] || [ "$SGBDSECURE" == "Y" ]; then
 fi
 
 # Instalação do phpMyadmin
-echo -e "${GREEN}Deseja instalar o phpMyAdmin${NORMAL} [Y/n]"
+echo -ne "${GREEN}Deseja instalar o phpMyAdmin${NORMAL} [Y/n]: "
 read PHPMYADMIN
 if [ "$PHPMYADMIN" == "y" ] || [ "$PHPMYADMIN" == "Y" ]; then
   # phpMyAdmin
@@ -164,7 +217,7 @@ if [ "$PHPMYADMIN" == "y" ] || [ "$PHPMYADMIN" == "Y" ]; then
 fi
 
 # Instalação do Composer
-echo -e "${GREEN}Deseja instalar o Composer${NORMAL} [Y/n]"
+echo -ne "${GREEN}Deseja instalar o Composer${NORMAL} [Y/n]: "
 read COMPOSER
 if [ "$COMPOSER" == "y" ] || [ "$COMPOSER" == "Y" ]; then
   # Composer
@@ -174,7 +227,7 @@ if [ "$COMPOSER" == "y" ] || [ "$COMPOSER" == "Y" ]; then
 fi
 
 # Instalação do Git
-echo -e "${GREEN}Deseja instalar o Git${NORMAL} [Y/n]"
+echo -ne "${GREEN}Deseja instalar o Git?${NORMAL} [Y/n]: "
 read GIT
 if [ "$GIT" == "y" ] || [ "$GIT" == "Y" ]; then
   # Git
