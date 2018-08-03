@@ -39,7 +39,7 @@ sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y dist-upgrade
 
 # Instalando pacotes essenciais
 echo -e "${ORANGE}Instalando pacotes essenciais${NORMAL}"
-sudo apt-get install software-properties-common python-software-properties curl
+sudo apt-get install -y software-properties-common python-software-properties curl
 
 # Escolha o Web Server
 echo -e "${RED}1${NORMAL}) apache2"
@@ -49,7 +49,7 @@ read SERVER
 if [ "$SERVER" == "1" ]; then
 	# Apache
 	echo -e "${ORANGE}Instalando Apache2${NORMAL}"
-  sudo apt-get install apache2
+  sudo apt-get install -y apache2
   # Configurações do Firewall
   sudo ufw enable
   sudo ufw allow "Apache Full"
@@ -89,7 +89,7 @@ if [ "$SERVER" == "1" ]; then
     echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
     echo -e "${ORANGE}Instalando PHP 7.2 e alguns pacotes${NORMAL}"
-    sudo apt-get install php7.2-cli libapache2-mod-php7.2 php7.2-mysql php7.2-curl php-memcached php7.2-dev php7.2-sqlite3 php7.2-mbstring php7.2-gd php7.2-json
+    sudo apt-get install -y php7.2 libapache2-mod-php7.2 php7.2-curl php7.2-gd php7.2-mbstring php7.2-cli php-memcached php7.2-mysql php7.2-xml php7.2-xmlrpc php7.2-sqlite3 php7.2-json php7.2-zip
     # Configurações do PHP
     # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php/7.2/apache2/php.ini
     # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php/7.2/apache2/php.ini
@@ -112,7 +112,7 @@ if [ "$SERVER" == "1" ]; then
 elif [ "$SERVER" == "2" ]; then
   # nginx
 	echo -e "${ORANGE}Instalando nginx${NORMAL}"
-  sudo apt-get install nginx
+  sudo apt-get install -y nginx
   # Configurações do Firewall
   sudo ufw enable
   sudo ufw allow 'Nginx Full'
@@ -133,49 +133,52 @@ elif [ "$SERVER" == "2" ]; then
     # sudo apt-get install memcached
     # Configurações do PHP
     
-    # /etc/php5/fpm/php.ini
+    # /etc/php5.6/fpm/php.ini
 
-    # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php/5.6/apache2/php.ini
-    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php/5.6/apache2/php.ini
-    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php/5.6/apache2/php.ini
-    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php/5.6/apache2/php.ini
-    # sed -i 's@^expose_php = On@expose_php = Off@' /etc/php/5.6/apache2/php.ini
-    # sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php/5.6/apache2/php.ini
-    sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php/5.6/apache2/php.ini
-    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php/5.6/apache2/php.ini
-    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php/5.6/apache2/php.ini
-    sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/5.6/apache2/php.ini
-    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' /etc/php/5.6/apache2/php.ini
-    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php/5.6/apache2/php.ini
-    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php/5.6/apache2/php.ini
-    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/apache2/php.ini
-    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/apache2/php.ini
+    # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php5.6/fpm/php.ini
+    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php5.6/fpm/php.ini
+    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php5.6/fpm/php.ini
+    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php5.6/fpm/php.ini
+    # sed -i 's@^expose_php = On@expose_php = Off@' /etc/php5.6/fpm/php.ini
+    # sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php5.6/fpm/php.ini
+    sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php5.6/fpm/php.ini
+    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php5.6/fpm/php.ini
+    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php5.6/fpm/php.ini
+    sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php5.6/fpm/php.ini
+    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' /etc/php5.6/fpm/php.ini
+    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php5.6/fpm/php.ini
+    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php5.6/fpm/php.ini
+    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" /etc/php5.6/fpm/php.ini
+    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php5.6/fpm/php.ini
     # Restart Nginx
-    sudo service nginx reload
+    sudo service nginx restart
   elif [ "$PHPV2" == "2" ]; then
     # Instalando PHP 7.2
     echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
 	  echo -e "${ORANGE}Instalando PHP 7.2 + PHP-FPM${NORMAL}"
-    sudo apt-get install php7.2-cli php7.2-fpm php7.2-mysql php7.2-curl php-memcached  php7.2-dev php7.2-sqlite3 php7.2-mbstring php7.2-gd php7.2-json php7.2-xmlrpc php7.2-xml php7.2-zip
+    sudo apt-get install php7.2-cli php7.2-fpm php7.2-mysql php7.2-curl php-memcached php7.2-dev php7.2-sqlite3 php7.2-mbstring php7.2-gd php7.2-json php7.2-xmlrpc php7.2-xml php7.2-zip
     # Configurações do PHP
-    # sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" ${php_install_dir}/etc/php.ini
-    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' ${php_install_dir}/etc/php.ini
-    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php/7.2/apache2/php.ini
-    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' ${php_install_dir}/etc/php.ini
-    # sed -i 's@^expose_php = On@expose_php = Off@' ${php_install_dir}/etc/php.ini
-    # sed -i 's@^request_order.*@request_order = "CGP"@' ${php_install_dir}/etc/php.ini
-    sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php/7.2/apache2/php.ini
-    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php/7.2/apache2/php.ini
-    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php/7.2/apache2/php.ini
-    sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/7.2/apache2/php.ini
-    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' ${php_install_dir}/etc/php.ini
-    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' ${php_install_dir}/etc/php.ini
-    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' ${php_install_dir}/etc/php.ini
-    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" ${php_install_dir}/etc/php.ini
-    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" ${php_install_dir}/etc/php.ini
-    # Restart Nginx
-    sudo service nginx reload
+    # sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" /etc/php/7.2/fpm/php.ini
+    # sed -i 's@^output_buffering =@output_buffering = On\noutput_buffering =@' /etc/php/7.2/fpm/php.ini
+    sed -i 's@^;cgi.fix_pathinfo.*@cgi.fix_pathinfo=0@' /etc/php/7.2/fpm/php.ini
+    # sed -i 's@^short_open_tag = Off@short_open_tag = On@' /etc/php/7.2/fpm/php.ini
+    # sed -i 's@^expose_php = On@expose_php = Off@' /etc/php/7.2/fpm/php.ini
+    # sed -i 's@^request_order.*@request_order = "CGP"@' /etc/php/7.2/fpm/php.ini
+    sed -i 's@^;date.timezone.*@date.timezone = America/Sao_Paulo@' /etc/php/7.2/fpm/php.ini
+    sed -i 's@^post_max_size.*@post_max_size = 100M@' /etc/php/7.2/fpm/php.ini
+    sed -i 's@^upload_max_filesize.*@upload_max_filesize = 100M@' /etc/php/7.2/fpm/php.ini
+    sed -i 's@^max_execution_time.*@max_execution_time = 600@' /etc/php/7.2/fpm/php.ini
+    # sed -i 's@^;realpath_cache_size.*@realpath_cache_size = 2M@' /etc/php/7.2/fpm/php.ini
+    # sed -i 's@^disable_functions.*@disable_functions = passthru,exec,system,chroot,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_restore,dl,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server,fsocket,popen@' /etc/php/7.2/fpm/php.ini
+    # [ -ne /usr/sbin/sendmail ] && sed -i 's@^;sendmail_path.*@sendmail_path = /usr/sbin/sendmail -t -i@' /etc/php/7.2/fpm/php.ini
+    # sed -i "s@^;curl.cainfo.*@curl.cainfo = ${openssl_install_dir}/cert.pem@" /etc/php/7.2/fpm/php.ini
+    # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/7.2/fpm/php.ini
+    # Configurações do Nginx
+    sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default_config
+
+    # Restart PHP-FPM & Nginx
+    sudo systemctl restart php7.2-fpm && sudo systemctl restart nginx
   fi
 fi
 
@@ -187,11 +190,11 @@ read SQLSERVER
 if [ "$SQLSERVER" == "1" ]; then
   # MySQL
   echo -e "${ORANGE}Instalando MySQL${NORMAL}"
-  sudo apt-get install mysql-server
+  sudo apt-get install -y mysql-server
 elif [ "$SQLSERVER" == "2" ]; then
   # MariaDB
   echo -e "${ORANGE}Instalando MariaDB${NORMAL}"
-  sudo apt-get install mariadb-server mariadb-client
+  sudo apt-get install -y mariadb-server mariadb-client
 fi
 
 # Instalação segura do MySQL/MariaDB
@@ -209,11 +212,23 @@ read PHPMYADMIN
 if [ "$PHPMYADMIN" == "y" ] || [ "$PHPMYADMIN" == "Y" ]; then
   # phpMyAdmin
   echo -e "${ORANGE}Instalando phpMyAdmin${NORMAL}"
-  sudo apt-get install phpmyadmin
+  sudo apt-get install -y phpmyadmin
   # Fix phpMyAdmin
-  sudo echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
-  echo -e "${ORANGE}Reiniciando  Apache${NORMAL}"
-  sudo /etc/init.d/apache2 restart
+  if [ "$SERVER" == "1" ]; then
+    # Fix Apache2
+    echo -e "${ORANGE}Realizando ajustes para apache2${NORMAL}"
+    sudo echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
+    # Restart Apache2
+    echo -e "${ORANGE}Reiniciando  Apache${NORMAL}"
+    sudo /etc/init.d/apache2 restart
+  elif [ "$SERVER" == "2" ]; then
+    # Fix nginx
+    echo -e "${ORANGE}Realizando ajustes para nginx${NORMAL}"
+    sudo ln -s /usr/share/phpmyadmin/ /var/www/html
+    # Restart nginx
+    echo -e "${ORANGE}Reiniciando nginx${NORMAL}"
+    sudo service nginx restart
+  fi
 fi
 
 # Instalação do Composer
@@ -232,7 +247,7 @@ read GIT
 if [ "$GIT" == "y" ] || [ "$GIT" == "Y" ]; then
   # Git
   echo -e "${ORANGE}Instalando Git${NORMAL}"
-  sudo apt-get install git
+  sudo apt-get install -y git
 fi
 
 echo -e "${GREEN}Instalação finalizada com sucesso!${NORMAL}"
