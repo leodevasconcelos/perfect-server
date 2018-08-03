@@ -176,7 +176,54 @@ elif [ "$SERVER" == "2" ]; then
     # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/7.2/fpm/php.ini
     # Configurações do Nginx
     sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default_config
+    sudo touch /etc/nginx/sites-available/default
+    sudo echo "server {
+    # Port that the web server will listen on.
+    listen 80;
 
+    # Host that will serve this project.
+    server_name localhost;
+
+    # Useful logs for debug.
+    access_log /var/log/nginx/localhost_access.log;
+    error_log /var/log/nginx/localhost_error.log;
+    rewrite_log on;
+
+    # The location of our projects public directory.
+    root /usr/share/nginx/html;
+
+    # Point index to the Laravel front controller.
+    index index.php index.html;
+
+    location / {
+        # URLs to attempt, including pretty ones.
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Remove trailing slash to please routing system.
+    if (!-d $request_filename) {
+        rewrite ^/(.+)/$ /$1 permanent;
+    }
+
+    # PHP FPM configuration.
+    location ~* \.php$ {
+        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_split_path_info ^(.+\.php)(.*)$;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    # We don't need .ht files with nginx.
+        location ~ /\.ht {
+        deny all;
+    }
+
+    # Set header expirations on per-project basis
+    location ~* \.(?:ico|css|js|jpe?g|JPG|png|svg|woff)$ {
+        expires 365d;
+    }
+}" >> /etc/nginx/sites-available/default
     # Restart PHP-FPM & Nginx
     sudo systemctl restart php7.2-fpm && sudo systemctl restart nginx
   fi
