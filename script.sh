@@ -30,6 +30,12 @@ ORANGE="\033[0;33m" # Laranja
 RED="\033[0;31m"   # Vermelho
 NORMAL="\033[0m"   # Sem cor (Cor normal)
 
+# Check root
+if [[ $EUID -ne 0 ]]; then
+   echo "Esse script precisa ser executado como root." 1>&2
+   exit 1
+fi
+
 # Start
 echo -e "${GREEN}Iniciando a Instalação do Servidor.${NORMAL}"
 
@@ -173,7 +179,7 @@ elif [ "$SERVER" == "2" ]; then
 }" >> /etc/nginx/sites-available/default
     # Restart PHP-FPM & Nginx
     sudo systemctl restart php5.6-fpm && sudo systemctl restart nginx
-    sudo echo "<?php phpinfo(); ?>" >> /var/www/html/info.php
+    sudo echo "<?php phpinfo(); ?>" > /var/www/html/info.php
   elif [ "$PHPV2" == "2" ]; then
     # Instalando PHP 7.2
     echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
@@ -248,7 +254,7 @@ elif [ "$SERVER" == "2" ]; then
 }" >> /etc/nginx/sites-available/default
     # Restart PHP-FPM & Nginx
     sudo systemctl restart php7.2-fpm && sudo systemctl restart nginx
-    sudo echo "<?php phpinfo(); ?>" >> /var/www/html/info.php
+    sudo echo "<?php phpinfo(); ?>" > /var/www/html/info.php
   fi
 fi
 
@@ -270,7 +276,7 @@ fi
 # Instalação segura do MySQL/MariaDB
 echo -ne "${GREEN}Realizar instalação segura do MySQL/MariaDB?${NORMAL} [Y/n]: "
 read SGBDSECURE
-if [ "$SGBDSECURE" == "y" ] || [ "$SGBDSECURE" == "Y" ]; then
+if [[ $SGBDSECURE = [yY] ]]; then
   # Instalação segura
   echo -e "${ORANGE}Realizando instalação segura${NORMAL}"
 	sudo mysql_secure_installation
@@ -279,7 +285,7 @@ fi
 # Instalação do phpMyadmin
 echo -ne "${GREEN}Deseja instalar o phpMyAdmin?${NORMAL} [Y/n]: "
 read PHPMYADMIN
-if [ "$PHPMYADMIN" == "y" ] || [ "$PHPMYADMIN" == "Y" ]; then
+if [[ $PHPMYADMIN = [yY] ]]; then
   # phpMyAdmin
   echo -e "${ORANGE}Instalando phpMyAdmin${NORMAL}"
   sudo apt-get install -y phpmyadmin
@@ -304,7 +310,7 @@ fi
 # Instalação do Composer
 echo -ne "${GREEN}Deseja instalar o Composer?${NORMAL} [Y/n]: "
 read COMPOSER
-if [ "$COMPOSER" == "y" ] || [ "$COMPOSER" == "Y" ]; then
+if [[ $COMPOSER = [yY] ]]; then
   # Composer
   echo -e "${ORANGE}Instalando Composer${NORMAL}"
   curl -sS https://getcomposer.org/installer | php
@@ -314,7 +320,7 @@ fi
 # Instalação do Git
 echo -ne "${GREEN}Deseja instalar o Git?${NORMAL} [Y/n]: "
 read GIT
-if [ "$GIT" == "y" ] || [ "$GIT" == "Y" ]; then
+if [[ $GIT = [yY] ]]; then
   # Git
   echo -e "${ORANGE}Instalando Git${NORMAL}"
   sudo apt-get install -y git
