@@ -26,7 +26,7 @@
 # Cyan         0;36     Light Cyan    1;36
 # Light Gray   0;37     White         1;37
 GREEN="\033[0;32m" # Verde
-ORANGE="\033[1;31m" # Laranja
+YELLOW="\033[1;33m" # Laranja
 RED="\033[0;31m"   # Vermelho
 NORMAL="\033[0m"   # Sem cor (Cor normal)
 
@@ -40,11 +40,11 @@ fi
 echo -e "${GREEN}Iniciando a Instalação do Servidor.${NORMAL}"
 
 #Atualizando Sistema
-echo -e "${ORANGE}Atualizando lista de pacotes e instalando as atualizações${NORMAL}"
+echo -e "${YELLOW}Atualizando lista de pacotes e instalando as atualizações${NORMAL}"
 sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y dist-upgrade
 
 # Instalando pacotes essenciais
-echo -e "${ORANGE}Instalando pacotes essenciais${NORMAL}"
+echo -e "${YELLOW}Instalando pacotes essenciais${NORMAL}"
 sudo apt-get install -y software-properties-common python-software-properties curl
 
 # Escolha o Web Server
@@ -54,7 +54,7 @@ echo -ne "${GREEN}Escolha o Web Server: ${NORMAL}"
 read SERVER
 if [ "$SERVER" == "1" ]; then
 	# Apache
-	echo -e "${ORANGE}Instalando Apache2${NORMAL}"
+	echo -e "${YELLOW}Instalando Apache2${NORMAL}"
   sudo apt-get install -y apache2
   # Configurações do Firewall
   sudo ufw enable
@@ -67,9 +67,9 @@ if [ "$SERVER" == "1" ]; then
   read PHPV1
   if [ "$PHPV1" == "1" ]; then
     # Instalando PHP 5.6
-    echo -e "${ORANGE}Adiconando repositório do PHP 5.6${NORMAL}"
+    echo -e "${YELLOW}Adiconando repositório do PHP 5.6${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
-	  echo -e "${ORANGE}Instalando PHP 5.6${NORMAL}"
+	  echo -e "${YELLOW}Instalando PHP 5.6${NORMAL}"
     sudo apt install -y php5.6 libapache2-mod-php5.6 php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-cli php5.6-memcached php5.6-mysql php5.6-xml php5.6-xmlrpc php5.6-intl php5.6-xsl php5.6-zip
     # sudo apt-get install memcached
     # Configurações do PHP
@@ -92,9 +92,9 @@ if [ "$SERVER" == "1" ]; then
     sudo /etc/init.d/apache2 restart
   elif [ "$PHPV1" == "2" ]; then
     # Instalando PHP 7.2
-    echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
+    echo -e "${YELLOW}Adiconando repositório do PHP 7.2${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
-    echo -e "${ORANGE}Instalando PHP 7.2 e alguns pacotes${NORMAL}"
+    echo -e "${YELLOW}Instalando PHP 7.2 e alguns pacotes${NORMAL}"
     sudo apt-get install -y php7.2 libapache2-mod-php7.2 php7.2-curl php7.2-gd php7.2-mbstring php7.2-cli php-memcached php7.2-mysql php7.2-xml php7.2-xmlrpc php7.2-sqlite3 php7.2-json php7.2-zip
     # Configurações do PHP
     # sed -i "s@^memory_limit.*@memory_limit = 512M@" /etc/php/7.2/apache2/php.ini
@@ -119,7 +119,7 @@ elif [ "$SERVER" == "2" ]; then
   # Repositório nginx
   sudo add-apt-repository -y ppa:nginx/stable && sudo apt-get update
   # nginx
-	echo -e "${ORANGE}Instalando nginx${NORMAL}"
+	echo -e "${YELLOW}Instalando nginx${NORMAL}"
   sudo apt-get install -y nginx
   # Configurações do Firewall
   sudo ufw enable
@@ -134,9 +134,9 @@ elif [ "$SERVER" == "2" ]; then
   read PHPV2
   if [ "$PHPV2" == "1" ]; then
     # Instalando PHP 5.6
-    echo -e "${ORANGE}Adiconando repositório do PHP 5.6${NORMAL}"
+    echo -e "${YELLOW}Adiconando repositório do PHP 5.6${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
-	  echo -e "${ORANGE}Instalando 5.6 + PHP-FPM${NORMAL}"
+	  echo -e "${YELLOW}Instalando 5.6 + PHP-FPM${NORMAL}"
     sudo apt-get install -y php5.6 php5.6-fpm php5.6-curl php5.6-gd php5.6-mbstring php5.6-mcrypt php5.6-cli php5.6-memcached php5.6-mysql php5.6-xml php5.6-xmlrpc php5.6-intl php5.6-xsl php5.6-zip
     # sudo apt-get install memcached
     # Configurações do PHP
@@ -164,9 +164,9 @@ elif [ "$SERVER" == "2" ]; then
     sudo echo "<?php phpinfo(); ?>" > /var/www/html/info.php
   elif [ "$PHPV2" == "2" ]; then
     # Instalando PHP 7.2
-    echo -e "${ORANGE}Adiconando repositório do PHP 7.2${NORMAL}"
+    echo -e "${YELLOW}Adiconando repositório do PHP 7.2${NORMAL}"
     sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update
-	  echo -e "${ORANGE}Instalando PHP 7.2 + PHP-FPM${NORMAL}"
+	  echo -e "${YELLOW}Instalando PHP 7.2 + PHP-FPM${NORMAL}"
     sudo apt-get install -y php7.2-cli php7.2-fpm php7.2-mysql php7.2-curl php-memcached php7.2-dev php7.2-sqlite3 php7.2-mbstring php7.2-gd php7.2-json php7.2-xmlrpc php7.2-xml php7.2-zip
     # Configurações do PHP
     # sed -i "s@^memory_limit.*@memory_limit = ${Memory_limit}M@" /etc/php/7.2/fpm/php.ini
@@ -201,11 +201,11 @@ echo -ne "${GREEN}Escolha o SGBD: ${NORMAL}"
 read SQLSERVER
 if [ "$SQLSERVER" == "1" ]; then
   # MySQL
-  echo -e "${ORANGE}Instalando MySQL${NORMAL}"
+  echo -e "${YELLOW}Instalando MySQL${NORMAL}"
   sudo apt-get install -y mysql-server
 elif [ "$SQLSERVER" == "2" ]; then
   # MariaDB
-  echo -e "${ORANGE}Instalando MariaDB${NORMAL}"
+  echo -e "${YELLOW}Instalando MariaDB${NORMAL}"
   sudo apt-get install -y mariadb-server mariadb-client
 fi
 
@@ -214,7 +214,7 @@ echo -ne "${GREEN}Realizar instalação segura do MySQL/MariaDB?${NORMAL} [Y/n]:
 read SGBDSECURE
 if [[ $SGBDSECURE = [yY] ]]; then
   # Instalação segura
-  echo -e "${ORANGE}Realizando instalação segura${NORMAL}"
+  echo -e "${YELLOW}Realizando instalação segura${NORMAL}"
 	sudo mysql_secure_installation
 fi
 
@@ -225,12 +225,12 @@ if [[ $PHPMYADMIN = [yY] ]]; then
   # Repositório phpMyAdmin
   # sudo add-apt-repository -y ppa:nijel/phpmyadmin && sudo apt-get update
   # phpMyAdmin
-  echo -e "${ORANGE}Instalando phpMyAdmin${NORMAL}"
+  echo -e "${YELLOW}Instalando phpMyAdmin${NORMAL}"
   sudo apt-get install -y phpmyadmin
   # Fix phpMyAdmin
   if [ "$PHPV1" == "2" ] || [ "$PHPV2" == "2" ]; then
     # Fix phpMyAdmin PHP 7.2.x
-    echo -e "${ORANGE}Realizando ajustes para PHP 7${NORMAL}"
+    echo -e "${YELLOW}Realizando ajustes para PHP 7${NORMAL}"
     cd /usr/share
     sudo rm -rf phpmyadmin
     sudo wget -P /usr/share/ "https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-all-languages.zip"
@@ -251,17 +251,17 @@ if [[ $PHPMYADMIN = [yY] ]]; then
   fi
   if [ "$SERVER" == "1" ]; then
     # Fix Apache2
-    echo -e "${ORANGE}Realizando ajustes para apache2${NORMAL}"
+    echo -e "${YELLOW}Realizando ajustes para apache2${NORMAL}"
     sudo echo "Include /etc/phpmyadmin/apache.conf" >> /etc/apache2/apache2.conf
     # Restart Apache2
-    echo -e "${ORANGE}Reiniciando  Apache${NORMAL}"
+    echo -e "${YELLOW}Reiniciando  Apache${NORMAL}"
     sudo /etc/init.d/apache2 restart
   elif [ "$SERVER" == "2" ]; then
     # Fix nginx
-    echo -e "${ORANGE}Realizando ajustes para nginx${NORMAL}"
+    echo -e "${YELLOW}Realizando ajustes para nginx${NORMAL}"
     sudo ln -s /usr/share/phpmyadmin/ /var/www/html
     # Restart nginx
-    echo -e "${ORANGE}Reiniciando nginx${NORMAL}"
+    echo -e "${YELLOW}Reiniciando nginx${NORMAL}"
     sudo service nginx restart
   fi
 fi
@@ -271,7 +271,7 @@ echo -ne "${GREEN}Deseja instalar o Composer?${NORMAL} [Y/n]: "
 read COMPOSER
 if [[ $COMPOSER = [yY] ]]; then
   # Composer
-  echo -e "${ORANGE}Instalando Composer${NORMAL}"
+  echo -e "${YELLOW}Instalando Composer${NORMAL}"
   curl -sS https://getcomposer.org/installer | php
   sudo mv composer.phar /usr/local/bin/composer
 fi
@@ -281,7 +281,7 @@ echo -ne "${GREEN}Deseja instalar o Git?${NORMAL} [Y/n]: "
 read GIT
 if [[ $GIT = [yY] ]]; then
   # Git
-  echo -e "${ORANGE}Instalando Git${NORMAL}"
+  echo -e "${YELLOW}Instalando Git${NORMAL}"
   sudo apt-get install -y git
 fi
 
