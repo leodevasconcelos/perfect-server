@@ -1,6 +1,6 @@
 #!/bin/bash
 #####################################################
-## Script de Configuração do Servidor Vagrant LAMP ##
+## Script de Configuração do Servidor LAMP & LEMP  ##
 ##                 BY: vendettafv                  ##
 #####################################################
 
