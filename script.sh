@@ -26,7 +26,7 @@
 # Cyan         0;36     Light Cyan    1;36
 # Light Gray   0;37     White         1;37
 GREEN="\033[0;32m" # Verde
-ORANGE="\033[1;31" # Laranja
+ORANGE="\033[1;31m" # Laranja
 RED="\033[0;31m"   # Vermelho
 NORMAL="\033[0m"   # Sem cor (Cor normal)
 
