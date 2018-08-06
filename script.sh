@@ -223,27 +223,31 @@ echo -ne "${GREEN}Deseja instalar o phpMyAdmin?${NORMAL} [Y/n]: "
 read PHPMYADMIN
 if [[ $PHPMYADMIN = [yY] ]]; then
   # Repositório phpMyAdmin
-  sudo add-apt-repository -y ppa:nijel/phpmyadmin && sudo apt-get update
+  # sudo add-apt-repository -y ppa:nijel/phpmyadmin && sudo apt-get update
   # phpMyAdmin
   echo -e "${ORANGE}Instalando phpMyAdmin${NORMAL}"
   sudo apt-get install -y phpmyadmin
   # Fix phpMyAdmin
-  if [ "$PHPV1" == "2" ] || [ "$PHPV1" == "2" ]; then
-    # Fix phpMyAdmin PHP 7.2.x
-    cd /usr/share
-    sudo rm -rf phpmyadmin
-    # Install
-    sudo apt-get install wget
-    sudo apt-get install unzip
-    sudo wget -P /usr/share/ "https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-all-languages.zip"
-    sudo unzip phpMyAdmin-4.8.2-all-languages.zip
-    sudo cp -r phpMyAdmin-4.8.2-all-languages phpmyadmin
-    sudo rm -rf phpMyAdmin-4.8.2-all-languages
-    sudo rm -rf phpMyAdmin-4.8.2-all-languages.zip
-    cd /usr/share/phpmyadmin
-    sudo mv /tmp/perfect-server/conf/config.inc_new.php /usr/share/phpmyadmin/config.inc.php
-    sudo mkdir tmp & chown -R www-data:www-data /usr/share/phpmyadmin/tmp
-  fi
+  # if [ "$PHPV1" == "2" ] || [ "$PHPV1" == "2" ]; then
+  #   # Fix phpMyAdmin PHP 7.2.x
+  #   cd /usr/share
+  #   sudo rm -rf phpmyadmin
+  #   sudo apt-get install wget
+  #   sudo apt-get install unzip
+  #   # Instala e configura um novo phpMyAdmin
+  #   sudo wget -P /usr/share/ "https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-all-languages.zip"
+  #   sudo unzip phpMyAdmin-4.8.2-all-languages.zip
+  #   sudo cp -r phpMyAdmin-4.8.2-all-languages phpmyadmin
+  #   sudo rm -rf phpMyAdmin-4.8.2-all-languages
+  #   sudo rm -rf phpMyAdmin-4.8.2-all-languages.zip
+  #   cd /usr/share/phpmyadmin
+  #   sudo mv /tmp/perfect-server/conf/config.inc_new.php /usr/share/phpmyadmin/config.inc.php
+  #   # Instalar novo tema
+  #   sudo mkdir tmp & chown -R www-data:www-data /usr/share/phpmyadmin/tmp
+  #   sudo wget -P /usr/share/phpmyadmin/themes/ "https://files.phpmyadmin.net/themes/metro/2.8/metro-2.8.zip"
+  #   sudo unzip metro-2.8.zip
+  #   sudo rm -rf metro-2.8.zip
+  # fi
   if [ "$SERVER" == "1" ]; then
     # Fix Apache2
     echo -e "${ORANGE}Realizando ajustes para apache2${NORMAL}"
