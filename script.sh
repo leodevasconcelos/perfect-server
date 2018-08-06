@@ -26,7 +26,7 @@
 # Cyan         0;36     Light Cyan    1;36
 # Light Gray   0;37     White         1;37
 GREEN="\033[0;32m" # Verde
-ORANGE="\033[0;33m" # Laranja
+ORANGE="\033[1;31" # Laranja
 RED="\033[0;31m"   # Vermelho
 NORMAL="\033[0m"   # Sem cor (Cor normal)
 
@@ -228,26 +228,27 @@ if [[ $PHPMYADMIN = [yY] ]]; then
   echo -e "${ORANGE}Instalando phpMyAdmin${NORMAL}"
   sudo apt-get install -y phpmyadmin
   # Fix phpMyAdmin
-  # if [ "$PHPV1" == "2" ] || [ "$PHPV1" == "2" ]; then
-  #   # Fix phpMyAdmin PHP 7.2.x
-  #   cd /usr/share
-  #   sudo rm -rf phpmyadmin
-  #   sudo apt-get install wget
-  #   sudo apt-get install unzip
-  #   # Instala e configura um novo phpMyAdmin
-  #   sudo wget -P /usr/share/ "https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-all-languages.zip"
-  #   sudo unzip phpMyAdmin-4.8.2-all-languages.zip
-  #   sudo cp -r phpMyAdmin-4.8.2-all-languages phpmyadmin
-  #   sudo rm -rf phpMyAdmin-4.8.2-all-languages
-  #   sudo rm -rf phpMyAdmin-4.8.2-all-languages.zip
-  #   cd /usr/share/phpmyadmin
-  #   sudo mv /tmp/perfect-server/conf/config.inc_new.php /usr/share/phpmyadmin/config.inc.php
-  #   # Instalar novo tema
-  #   sudo mkdir tmp & chown -R www-data:www-data /usr/share/phpmyadmin/tmp
-  #   sudo wget -P /usr/share/phpmyadmin/themes/ "https://files.phpmyadmin.net/themes/metro/2.8/metro-2.8.zip"
-  #   sudo unzip metro-2.8.zip
-  #   sudo rm -rf metro-2.8.zip
-  # fi
+  if [ "$PHPV1" == "2" ] || [ "$PHPV2" == "2" ]; then
+    # Fix phpMyAdmin PHP 7.2.x
+    echo -e "${ORANGE}Realizando ajustes para PHP 7${NORMAL}"
+    cd /usr/share
+    sudo rm -rf phpmyadmin
+    sudo wget -P /usr/share/ "https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-all-languages.zip"
+    sudo unzip phpMyAdmin-4.8.2-all-languages.zip
+    sudo cp -r phpMyAdmin-4.8.2-all-languages phpmyadmin
+    sudo rm -rf phpMyAdmin-4.8.2-all-languages
+    sudo rm -rf phpMyAdmin-4.8.2-all-languages.zip
+    cd /usr/share/phpmyadmin
+    sudo rm -rf favicon.ico
+    sudo mv /tmp/perfect-server/conf/favicon.ico /usr/share/phpmyadmin/favicon.ico
+    sudo mv /tmp/perfect-server/conf/config.inc_new.php /usr/share/phpmyadmin/config.inc.php
+    sudo mkdir tmp && sudo chown -R www-data:www-data /usr/share/phpmyadmin/tmp
+    sudo mkdir upload && sudo mkdir save
+    sudo wget -P /usr/share/phpmyadmin/themes/ "https://files.phpmyadmin.net/themes/metro/2.8/metro-2.8.zip"
+    cd /usr/share/phpmyadmin/themes
+    sudo unzip metro-2.8.zip
+    sudo rm -rf metro-2.8.zip
+  fi
   if [ "$SERVER" == "1" ]; then
     # Fix Apache2
     echo -e "${ORANGE}Realizando ajustes para apache2${NORMAL}"
@@ -284,4 +285,6 @@ if [[ $GIT = [yY] ]]; then
   sudo apt-get install -y git
 fi
 
+# Configurações finais
+sudo apt-get update && sudo apt-get -y upgrade
 echo -e "${GREEN}Instalação finalizada com sucesso!${NORMAL}"
