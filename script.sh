@@ -116,6 +116,8 @@ if [ "$SERVER" == "1" ]; then
     sudo /etc/init.d/apache2 restart
   fi
 elif [ "$SERVER" == "2" ]; then
+  # Repositório nginx
+  sudo add-apt-repository -y ppa:nginx/stable && sudo apt-get update
   # nginx
 	echo -e "${ORANGE}Instalando nginx${NORMAL}"
   sudo apt-get install -y nginx
@@ -155,28 +157,8 @@ elif [ "$SERVER" == "2" ]; then
     # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/5.6/fpm/php.ini
     # Configurações do Nginx
     sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default_config
-    sudo touch /etc/nginx/sites-available/default
-    sudo echo "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-    index index.php index.html index.htm index.nginx-debian.html;
-
-    server_name localhost;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-    location ~ \.php$ {
-           try_files $uri =404;
-           fastcgi_pass unix:/run/php/php5.6-fpm.sock;
-           fastcgi_index index.php;
-           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-           include fastcgi_params;
-                
-     }
-}" >> /etc/nginx/sites-available/default
+    # Move o novo arquivo de configurações
+    sudo mv /tmp/perfect-server/conf/default_5-6 /etc/nginx/sites-available/default
     # Restart PHP-FPM & Nginx
     sudo systemctl restart php5.6-fpm && sudo systemctl restart nginx
     sudo echo "<?php phpinfo(); ?>" > /var/www/html/info.php
@@ -204,54 +186,8 @@ elif [ "$SERVER" == "2" ]; then
     # sed -i "s@^;openssl.cafile.*@openssl.cafile = ${openssl_install_dir}/cert.pem@" /etc/php/7.2/fpm/php.ini
     # Configurações do Nginx
     sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default_config
-    sudo touch /etc/nginx/sites-available/default
-    sudo echo "server {
-    # Port that the web server will listen on.
-    listen 80;
-
-    # Host that will serve this project.
-    server_name localhost;
-
-    # Useful logs for debug.
-    access_log /var/log/nginx/localhost_access.log;
-    error_log /var/log/nginx/localhost_error.log;
-    rewrite_log on;
-
-    # The location of our projects public directory.
-    root /var/www/html;
-
-    # Point index to the Laravel front controller.
-    index index.php index.html;
-
-    location / {
-        # URLs to attempt, including pretty ones.
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    # Remove trailing slash to please routing system.
-    if (!-d $request_filename) {
-        rewrite ^/(.+)/$ /$1 permanent;
-    }
-
-    # PHP FPM configuration.
-    location ~* \.php$ {
-        fastcgi_pass unix:/run/php/php7.2-fpm.sock;
-        fastcgi_index index.php;
-        fastcgi_split_path_info ^(.+\.php)(.*)$;
-        include /etc/nginx/fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    }
-
-    # We don't need .ht files with nginx.
-        location ~ /\.ht {
-        deny all;
-    }
-
-    # Set header expirations on per-project basis
-    location ~* \.(?:ico|css|js|jpe?g|JPG|png|svg|woff)$ {
-        expires 365d;
-    }
-}" >> /etc/nginx/sites-available/default
+    # Move o novo arquivo de configurações
+    sudo mv /tmp/perfect-server/conf/default_7-2 /etc/nginx/sites-available/default
     # Restart PHP-FPM & Nginx
     sudo systemctl restart php7.2-fpm && sudo systemctl restart nginx
     sudo echo "<?php phpinfo(); ?>" > /var/www/html/info.php
@@ -286,10 +222,28 @@ fi
 echo -ne "${GREEN}Deseja instalar o phpMyAdmin?${NORMAL} [Y/n]: "
 read PHPMYADMIN
 if [[ $PHPMYADMIN = [yY] ]]; then
+  # Repositório phpMyAdmin
+  sudo add-apt-repository -y ppa:nijel/phpmyadmin && sudo apt-get update
   # phpMyAdmin
   echo -e "${ORANGE}Instalando phpMyAdmin${NORMAL}"
   sudo apt-get install -y phpmyadmin
   # Fix phpMyAdmin
+  if [ "$PHPV1" == "2" ] || [ "$PHPV1" == "2" ]; then
+    # Fix phpMyAdmin PHP 7.2.x
+    cd /usr/share
+    sudo rm -rf phpmyadmin
+    # Install
+    sudo apt-get install wget
+    sudo apt-get install unzip
+    sudo wget -P /usr/share/ "https://files.phpmyadmin.net/phpMyAdmin/4.8.2/phpMyAdmin-4.8.2-all-languages.zip"
+    sudo unzip phpMyAdmin-4.8.2-all-languages.zip
+    sudo cp -r phpMyAdmin-4.8.2-all-languages phpmyadmin
+    sudo rm -rf phpMyAdmin-4.8.2-all-languages
+    sudo rm -rf phpMyAdmin-4.8.2-all-languages.zip
+    cd /usr/share/phpmyadmin
+    sudo mv /tmp/perfect-server/conf/config.inc_new.php /usr/share/phpmyadmin/config.inc.php
+    sudo mkdir tmp & chown -R www-data:www-data /usr/share/phpmyadmin/tmp
+  fi
   if [ "$SERVER" == "1" ]; then
     # Fix Apache2
     echo -e "${ORANGE}Realizando ajustes para apache2${NORMAL}"
