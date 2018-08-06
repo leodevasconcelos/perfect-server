@@ -45,7 +45,7 @@ sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get -y dist-upgrade
 
 # Instalando pacotes essenciais
 echo -e "${YELLOW}Instalando pacotes essenciais${NORMAL}"
-sudo apt-get install -y software-properties-common python-software-properties curl
+sudo apt-get install -y software-properties-common python-software-properties curl unzip
 
 # Escolha o Web Server
 echo -e "${RED}1${NORMAL}) apache2"
