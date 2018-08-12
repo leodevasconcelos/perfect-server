@@ -13,6 +13,7 @@
 # PHP 5.6
 # Memcached
 # phpMyAdmin
+# SSL
 # Composer
 # Git
 
@@ -38,6 +39,12 @@ fi
 
 # Start
 echo -e "${GREEN}Iniciando a Instalação do Servidor.${NORMAL}"
+
+# Ambiente de Instalação
+echo -e "${RED}1${NORMAL}) Localhost"
+echo -e "${RED}2${NORMAL}) VPS ou Dedicado"
+echo -ne "${GREEN}Qual tipo de ambiente você está utilizando?:${NORMAL} "
+read TYPE
 
 #Atualizando Sistema
 echo -e "${YELLOW}Atualizando lista de pacotes e instalando as atualizações${NORMAL}"
@@ -123,7 +130,7 @@ elif [ "$SERVER" == "2" ]; then
   sudo apt-get install -y nginx
   # Configurações do Firewall
   sudo ufw enable
-  sudo ufw allow 'Nginx Full'
+  sudo ufw allow "Nginx Full"
   sudo ufw allow "OpenSSH"
   sudo ufw delete allow 'Nginx HTTP'
 
@@ -263,6 +270,28 @@ if [[ $PHPMYADMIN = [yY] ]]; then
     # Restart nginx
     echo -e "${YELLOW}Reiniciando nginx${NORMAL}"
     sudo service nginx restart
+  fi
+fi
+
+# Instalação de Certificado SSL
+if [ "$TYPE" == "2" ]; then
+  # Iniciando instalação
+  echo -ne "${GREEN}Deseja instalar o certificado SSL Let's Encrypt?${NORMAL} [Y/n]: "
+  read SITESSL
+  if [[ $SITESSL = [yY] ]]; then
+    # Certbot
+    echo -e "${YELLOW}Instalando SSL${NORMAL}"
+    sudo add-apt-repository -y ppa:certbot/certbot && sudo apt-get update
+    sudo apt-get install -y python-certbot-nginx
+    # Domínio
+    # Instalação do SGBD
+    echo -e "${RED}1${NORMAL}) Sim"
+    echo -e "${RED}2${NORMAL}) Não (Instalação padrão)"
+    echo -ne "${GREEN}: ${NORMAL}"
+    read SQLSERVER
+    echo -ne "${GREEN}Digite o domínio em que deseja instalar o certificado SSL${NORMAL}: "
+    read DOMAIN
+    sudo letsencrypt certonly -a webroot --webroot-path=/usr/share/nginx/$DOMAIN/ -d $DOMAIN
   fi
 fi
 
